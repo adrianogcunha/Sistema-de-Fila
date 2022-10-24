@@ -10,6 +10,7 @@ typedef struct noRN{
      noRN *dir;
 }noRN;
 
+//Busca o menor elemento da árvore para ser removido
 int busca_menor(noRN *arvore) {
     noRN* aux = arvore;
     while (arvore->esq != NULL) {
@@ -26,7 +27,14 @@ void inserir(noRN *arvore, int chave){
 
 }
 
-//Printar em pre-ordem
+void imprimir_pre_ordem(noRN *raiz){
+     if(raiz != NULL){
+             printf("\n%i", raiz->chave);
+             exibirPreOrdem(raiz->esq);
+             exibirPreOrdem(raiz->dir);
+         }
+     }
+}
 
 int main(){
      noRN *arvore = (noRN *)malloc(sizeof(noRN));
@@ -37,7 +45,7 @@ int main(){
                int menor = busca_menor(arvore); //buscar o menor valor da árvore
                remover(arvore, menor); //remover o nó de menor valor
           }else{
-               //inserir
+               inserir(arvore, num);
           }
      }
      //printar em pre-ordem
