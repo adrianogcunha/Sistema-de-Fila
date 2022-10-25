@@ -19,7 +19,7 @@ void imprimir_pre_ordem(noRN *raiz){
           if (raiz->cor == 0){
                printf(" PRETO");
           }else{
-               printf(" VERMELHO\n");
+               printf(" VERMELHO");
           }
              
           imprimir_pre_ordem(raiz->esq);
@@ -27,24 +27,30 @@ void imprimir_pre_ordem(noRN *raiz){
      }
 }
 
-
-void LL(noRN **raiz, noRN **no){
+void LL(noRN *x)
+{
      noRN *aux;
-     aux = (*no)->dir; // lado direito
-     if (aux->esq != NULL) {
-          aux->esq->pai = (*no);
+     aux = x->dir;
+     if (aux->esq != NULL)
+     {
+          aux->esq->pai = x;
      }
-     (*no)->dir = aux->esq; //ok
-     aux->esq = (*no);
-     aux->pai = (*no)->pai;
-     if ((*no)->pai != NULL) { //não é raiz
-          aux->pai = (*no)->pai;
-     }else{//é raiz
-          (*raiz) = aux;
-          aux->pai = NULL;
+     x->dir = aux->esq;
+     aux->esq = x;
+     aux->pai = x->pai;
+     if (x->pai != NULL)
+     {
+          if (x->pai->esq == x)
+          {
+               x->pai->esq = aux;
+          }
+          else
+          {
+               x->pai->dir = aux;
+          }
      }
-     (*no)->pai = aux;
-     //(*no) = aux;
+     x->pai = aux;
+     //	puts("Rodou");
 }
 
 void RR(noRN **raiz, noRN **no){
@@ -63,6 +69,7 @@ void RR(noRN **raiz, noRN **no){
      }
      (*no)->pai = aux;
      //(*no) = aux;
+     puts("Entrou RR");
 }
 
 
@@ -95,7 +102,7 @@ void TESTE_fix_up(noRN **raiz, noRN *arvore){
                          arvore->pai->pai->cor = VERMELHO;
                          //RR(raiz, &arvore->pai->pai);
                     }
-                    puts("Caso3");
+                    puts("Caso3-L");
                }
           // pai na subararvore direita
           }else{
@@ -107,7 +114,7 @@ void TESTE_fix_up(noRN **raiz, noRN *arvore){
                     aux_tio->cor = PRETO;
                     arvore->pai->pai->cor = VERMELHO;
                     arvore = arvore->pai->pai;
-                    puts("Caso2");
+                    puts("Caso2-D");
                }
                // caso 3 - pai vermelho e tio preto mudo cor e faz rotações
                else
@@ -119,19 +126,19 @@ void TESTE_fix_up(noRN **raiz, noRN *arvore){
                     arvore->pai->cor = PRETO;
                     if(arvore->pai->pai != NULL){
                          arvore->pai->pai->cor = VERMELHO;
-                         LL(raiz, &arvore->pai->pai);
+                         LL(arvore->pai->pai);
                     
                     }
-                    puts("Caso3");
+                    puts("Caso3-D");
                }
           }
      }
-     /*
+     
      if(arvore->pai == NULL)
           (*raiz) = arvore;
      else if(arvore->pai->pai == NULL)
           (*raiz) = arvore->pai;
-     */
+     
 
      (*raiz)->cor = PRETO;
 }
