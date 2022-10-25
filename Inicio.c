@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdin.h>\
+#include <stdin.h>
 
 typedef struct noRN{
      int chave;

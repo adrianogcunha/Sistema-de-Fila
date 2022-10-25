@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define PRETO 0
+#define VERMELHO 1
 
 typedef struct noRN{
      int chave;
@@ -13,9 +15,15 @@ typedef struct noRN{
 
 void imprimir_pre_ordem(noRN *raiz){
      if(raiz != NULL){
-             printf("\n%i", raiz->chave);
-             imprimir_pre_ordem(raiz->esq);
-             imprimir_pre_ordem(raiz->dir);
+          printf("\n%d ", raiz->chave);
+          if (raiz->cor == 0){
+               printf(" PRETO");
+          }else{
+               printf(" VERMELHO");
+          }
+             
+          imprimir_pre_ordem(raiz->esq);
+          imprimir_pre_ordem(raiz->dir);
      }
 }
 
@@ -37,6 +45,7 @@ void LL(noRN **raiz, noRN **no){
      (*no)->pai = aux;
      //(*no) = aux;
 }
+
 void RR(noRN **raiz, noRN **no){
      noRN *aux;
      aux = (*no)->esq; // lado direito
@@ -56,52 +65,60 @@ void RR(noRN **raiz, noRN **no){
 }
 
 
+
+void TESTE_fix_up(noRN *raiz, noRN *arvore){
+     while (arvore->pai != NULL && arvore->pai->cor == VERMELHO){
+          
+     }
+}
+
+
 void RB_insert_fix_up(noRN *raiz, noRN *arvore){
      //se o pai for preto n muda nada.
-     while (arvore->pai->cor == 1){
+     while (arvore->pai->cor == VERMELHO){
           noRN *aux;
           //pai na subararvore esquerda
           if (arvore->pai == arvore->pai->pai->esq){
                aux = arvore->pai->pai->dir;
-               //pai vermelho e tio vermelho só mudo cores
-               if (aux->cor == 1) {
-                    arvore->pai->cor = 0;
-                    aux->cor = 0;
-                    arvore->pai->pai->cor = 1;
+               //caso 2 - pai vermelho e tio vermelho só mudo cores
+               if (aux->cor == VERMELHO) {
+                    arvore->pai->cor = PRETO;
+                    aux->cor = PRETO;
+                    arvore->pai->pai->cor = VERMELHO;
                     arvore = arvore->pai->pai;
-               //pai vermelho e tio preto mudo cor e faz rotações
+               //caso 3 - pai vermelho e tio preto mudo cor e faz rotações
                }else{
                     if (arvore == arvore->pai->dir){ //RL
                          arvore = arvore->pai;
                          //LL();
                     }
                     //RR();
-                    arvore->pai->cor = 0;
-                    arvore->pai->pai->cor = 1;
+                    arvore->pai->cor = PRETO;
+                    arvore->pai->pai->cor = VERMELHO;
                }
           }
           //pai na subararvore direita
           else{
                aux = arvore->pai->pai->esq;
-               //pai vermelho e tio vermelho só mudo cores
-               if (aux->cor == 1) {
-                    arvore->pai->cor = 0;
-                    aux->cor = 0;
-                    arvore->pai->pai->cor = 1;
+               // caso 2 - pai vermelho e tio vermelho só mudo cores
+               if (aux->cor == VERMELHO) {
+                    arvore->pai->cor = PRETO;
+                    aux->cor = PRETO;
+                    arvore->pai->pai->cor = VERMELHO;
                     arvore = arvore->pai->pai;
-               //pai vermelho e tio preto mudo cor e faz rotações
+               // caso 3 - pai vermelho e tio preto mudo cor e faz rotações
                }else{
                     if (arvore == arvore->pai->esq){ //LR
                          arvore = arvore->pai;
                          //RR();
                     }
                     //LL();
-                    arvore->pai->cor = 0;
-                    arvore->pai->pai->cor = 1;
+                    arvore->pai->cor = PRETO;
+                    arvore->pai->pai->cor = VERMELHO;
                }
           }
      }//FIM while
-     raiz->cor = 0;
+     raiz->cor = PRETO;
 }
 
 noRN *RB_insert(noRN **raiz, int num){
@@ -131,7 +148,7 @@ noRN *RB_insert(noRN **raiz, int num){
      aux->chave = num;
      aux->esq = NULL;
      aux->dir = NULL;
-     aux->cor = 1;
+     aux->cor = VERMELHO; //vermelho
 
      return aux;
      //RB_insert_fix_up(raiz, arvore);
