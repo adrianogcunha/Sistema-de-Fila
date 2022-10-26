@@ -27,30 +27,32 @@ void imprimir_pre_ordem(noRN *raiz){
      }
 }
 
-void LL(noRN *x)
-{
+
+void LL(noRN **raiz, noRN **no){
+     printf("%d\n", (*no)->chave);
      noRN *aux;
-     aux = x->dir;
-     if (aux->esq != NULL)
-     {
-          aux->esq->pai = x;
+     //noRN *aux2;
+     aux = (*no)->dir; // lado direito
+     if (aux->esq != NULL) {
+          aux->esq->pai = (*no);
      }
-     x->dir = aux->esq;
-     aux->esq = x;
-     aux->pai = x->pai;
-     if (x->pai != NULL)
-     {
-          if (x->pai->esq == x)
-          {
-               x->pai->esq = aux;
-          }
-          else
-          {
-               x->pai->dir = aux;
-          }
+     (*no)->dir = aux->esq; //ok
+     aux->esq = (*no);
+     if ((*no)->pai != NULL) { //não é raiz
+          aux->pai = (*no)->pai;
+     }else{//é raiz
+          //aux2 = (*no);
+          aux->pai = NULL;
+          (*raiz) = aux;
+          //(*no) = aux2;
      }
-     x->pai = aux;
-     //	puts("Rodou");
+     printf("%p\n", aux->pai);
+     printf("%p\n", (*no));
+     printf("%p\n", aux);
+     (*no)->pai = aux;
+     printf("%p\n", (*no)->pai);
+     //printf("%p\n", (*raiz));
+     puts("Entrou LL");
 }
 
 void RR(noRN **raiz, noRN **no){
@@ -67,6 +69,7 @@ void RR(noRN **raiz, noRN **no){
           (*raiz) = aux;
           aux->pai = NULL;
      }
+     
      (*no)->pai = aux;
      //(*no) = aux;
      puts("Entrou RR");
@@ -126,20 +129,13 @@ void TESTE_fix_up(noRN **raiz, noRN *arvore){
                     arvore->pai->cor = PRETO;
                     if(arvore->pai->pai != NULL){
                          arvore->pai->pai->cor = VERMELHO;
-                         LL(arvore->pai->pai);
+                         LL(raiz, &arvore->pai->pai);
                     
                     }
                     puts("Caso3-D");
                }
           }
      }
-     
-     if(arvore->pai == NULL)
-          (*raiz) = arvore;
-     else if(arvore->pai->pai == NULL)
-          (*raiz) = arvore->pai;
-     
-
      (*raiz)->cor = PRETO;
 }
 
