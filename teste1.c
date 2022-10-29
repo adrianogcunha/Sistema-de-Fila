@@ -4,8 +4,7 @@
 #define PRETO 0
 #define VERMELHO 1
 
-typedef struct noRN
-{
+typedef struct noRN{
     int chave;
     int cor; // 1 = vermelho, 0 = preto
     struct noRN *pai;
@@ -32,51 +31,44 @@ void imprimir_pre_ordem(noRN *raiz)
     }
 }
 
-void LL(noRN **raiz, noRN **no)
-{
-    printf("%d", (*no)->chave);
+void LL(noRN *no){
+    puts("Entrou LL");
     noRN *aux;
-    aux = (*no)->dir; // lado direito
-    if (aux->esq != NULL)
-    {
-        aux->esq->pai = (*no);
+    aux = no->dir;
+    if (aux->esq != NULL){
+        aux->esq->pai = no;
     }
-    (*no)->dir = aux->esq; // ok
-    aux->esq = (*no);
-    if ((*no)->pai != NULL)
-    { // não é raiz
-        aux->pai = (*no)->pai;
+    no->dir = aux->esq;
+    aux->esq = no;
+    aux->pai = no->pai;
+    if (no->pai != NULL){
+        if (no->pai->esq == no){
+            no->pai->esq = aux;
+        }else{
+            no->pai->dir = aux;
+        }
     }
-    else
-    { //é raiz
-        (*raiz) = aux;
-        aux->pai = NULL;
-    }
-    //(*no)->pai = aux;
-    //(*no) = aux;
+    no->pai = aux;
 }
 
-void RR(noRN **raiz, noRN **no)
-{
+void RR(noRN *no){
+    puts("Entrou RR");
     noRN *aux;
-    aux = (*no)->esq; // lado direito
-    if (aux->dir != NULL)
-    {
-        aux->dir->pai = (*no);
+    aux = no->esq;
+    if (aux->dir != NULL){
+        aux->dir->pai = no;
     }
-    (*no)->esq = aux->dir; // ok
-    aux->dir = (*no);
-    if ((*no)->pai != NULL)
-    { // não é raiz
-        aux->pai = (*no)->pai;
+    no->esq = aux->dir;
+    aux->dir = no;
+    aux->pai = no->pai;
+    if (no->pai != NULL){
+        if (no->pai->esq == no){
+            no->pai->esq = aux;
+        }else{
+            no->pai->dir = aux;
+        }
     }
-    else
-    { //é raiz
-        (*raiz) = aux;
-        aux->pai = NULL;
-    }
-    //(*no)->pai = aux;
-    //(*no) = aux;
+    no->pai = aux;
 }
 
 void TESTE_fix_up(noRN **raiz, noRN *arvore)
@@ -96,6 +88,7 @@ void TESTE_fix_up(noRN **raiz, noRN *arvore)
                 aux_tio->cor = PRETO;
                 arvore->pai->pai->cor = VERMELHO;
                 arvore = arvore->pai->pai;
+                puts("Caso2");
             }
             // caso 3 - pai vermelho e tio preto mudo cor e faz rotações
             else
@@ -103,14 +96,15 @@ void TESTE_fix_up(noRN **raiz, noRN *arvore)
                 if (arvore == arvore->pai->dir)
                 { // RL
                     arvore = arvore->pai;
-                    LL(raiz, &arvore);
+                    LL(arvore);
                 }
                 arvore->pai->cor = PRETO;
                 if (arvore->pai->pai != NULL)
                 {
                     arvore->pai->pai->cor = VERMELHO;
-                    RR(raiz, &arvore->pai->pai);
+                    RR(arvore->pai->pai);
                 }
+                puts("Caso3-L");
             }
             // pai na subararvore direita
         }
@@ -124,6 +118,7 @@ void TESTE_fix_up(noRN **raiz, noRN *arvore)
                 aux_tio->cor = PRETO;
                 arvore->pai->pai->cor = VERMELHO;
                 arvore = arvore->pai->pai;
+                puts("Caso2-D");
             }
             // caso 3 - pai vermelho e tio preto mudo cor e faz rotações
             else
@@ -131,80 +126,27 @@ void TESTE_fix_up(noRN **raiz, noRN *arvore)
                 if (arvore == arvore->pai->esq)
                 { // LR
                     arvore = arvore->pai;
-                    RR(raiz, &arvore);
+                    RR(arvore);
                 }
                 arvore->pai->cor = PRETO;
                 if (arvore->pai->pai != NULL)
                 {
                     arvore->pai->pai->cor = VERMELHO;
-                    LL(raiz, &arvore->pai->pai);
+                    LL(arvore->pai->pai);
                 }
+                puts("Caso3-D");
             }
         }
     }
 
+    if (arvore->pai == NULL)
+        (*raiz) = arvore;
+    else if (arvore->pai->pai == NULL)
+        (*raiz) = arvore->pai;
+
     (*raiz)->cor = PRETO;
 }
 
-void RB_insert_fix_up(noRN *raiz, noRN *arvore)
-{
-    // se o pai for preto n muda nada.
-    while (arvore->pai->cor == VERMELHO)
-    {
-        noRN *aux;
-        // pai na subararvore esquerda
-        if (arvore->pai == arvore->pai->pai->esq)
-        {
-            aux = arvore->pai->pai->dir;
-            // caso 2 - pai vermelho e tio vermelho só mudo cores
-            if (aux->cor == VERMELHO)
-            {
-                arvore->pai->cor = PRETO;
-                aux->cor = PRETO;
-                arvore->pai->pai->cor = VERMELHO;
-                arvore = arvore->pai->pai;
-                // caso 3 - pai vermelho e tio preto mudo cor e faz rotações
-            }
-            else
-            {
-                if (arvore == arvore->pai->dir)
-                { // RL
-                    arvore = arvore->pai;
-                    // LL();
-                }
-                // RR();
-                arvore->pai->cor = PRETO;
-                arvore->pai->pai->cor = VERMELHO;
-            }
-        }
-        // pai na subararvore direita
-        else
-        {
-            aux = arvore->pai->pai->esq;
-            // caso 2 - pai vermelho e tio vermelho só mudo cores
-            if (aux->cor == VERMELHO)
-            {
-                arvore->pai->cor = PRETO;
-                aux->cor = PRETO;
-                arvore->pai->pai->cor = VERMELHO;
-                arvore = arvore->pai->pai;
-                // caso 3 - pai vermelho e tio preto mudo cor e faz rotações
-            }
-            else
-            {
-                if (arvore == arvore->pai->esq)
-                { // LR
-                    arvore = arvore->pai;
-                    // RR();
-                }
-                // LL();
-                arvore->pai->cor = PRETO;
-                arvore->pai->pai->cor = VERMELHO;
-            }
-        }
-    } // FIM while
-    raiz->cor = PRETO;
-}
 
 void RB_insert(noRN **raiz, int num)
 {
@@ -254,14 +196,20 @@ int main()
 {
     noRN *raiz = NULL; // Ponteiro que aponta para a raiz da árvore
     int num;
-    RB_insert(&raiz, 5);
+    RB_insert(&raiz, 9);
+    // printf("%p\n", raiz->dir);
+    RB_insert(&raiz, 8);
     // printf("%p\n", raiz->dir);
     RB_insert(&raiz, 7);
-    // printf("%p\n", raiz->dir);
-    RB_insert(&raiz, 9);
+    RB_insert(&raiz, 6);
+    RB_insert(&raiz, 1);
+    //RB_insert(&raiz, 2);
+    //RB_insert(&raiz, 3);
     imprimir_pre_ordem(raiz);
+    printf("\n");
     // LL(&raiz, &v);
     // imprimir_pre_ordem(raiz);
 
     return 0;
 }
+

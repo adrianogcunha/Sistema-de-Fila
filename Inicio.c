@@ -164,16 +164,14 @@ void RB_insert(noRN **raiz, int num){
 int main(){
      noRN *raiz = NULL; // Ponteiro que aponta para a raiz da árvore
      int num;
-     while( != EOF){
-          scanf("%d", &num);
+     while(scanf("%d", &num) != EOF){
           if(num == -1){
-               int menor = busca_menor(arvore); //buscar o menor valor da árvore
-               remover(arvore, menor); //remover o nó de menor valor
+               remover(&raiz); //remover o nó de menor valor
           }else{
-               inserir(arvore, num);
+               inserir(&raiz, num);
           }
      }
-     //printar em pre-ordem
+     imprimir_pre_ordem(raiz);
      return 0;
 }
 */
@@ -181,11 +179,13 @@ int main()
 {
      noRN *raiz = NULL; // Ponteiro que aponta para a raiz da árvore
      int num;
-     RB_insert(&raiz, 5);
+     RB_insert(&raiz, 9);
+     // printf("%p\n", raiz->dir);
+     RB_insert(&raiz, 8);
      // printf("%p\n", raiz->dir);
      RB_insert(&raiz, 7);
-     // printf("%p\n", raiz->dir);
-     RB_insert(&raiz, 9);
+     RB_insert(&raiz, 6);
+     RB_insert(&raiz, 1);
      imprimir_pre_ordem(raiz);
      printf("\n");
      // LL(&raiz, &v);
